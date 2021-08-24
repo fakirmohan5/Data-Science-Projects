@@ -11,6 +11,8 @@ then its pretty much same i guess.... spliting the file paths for every images a
 in the end i have tried to decode jpeg format images ti redable matrix format for computer or python. then to scale down after dividing each number (0-255) by 255 we got numbers (0-1) in the matrix which makes it easy to handle the files.
 
 
+i have uploaded code files in 2 formats. one is named "tensorflow data pipeline basic..." and another one is "json format code for jupyternotebook" inside program folder. to read json format code in jupyternotebook i found a website ' https://nbviewer.jupyter.org/ ' 
+
 
 
 difficulties i faced : frankly being new to these environments(jupyter notebook) it took me a while to get started. like i had to install tensorflow first to my jupyternotbook.

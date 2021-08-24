@@ -1,0 +1,794 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "6e4f2bdf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import tensorflow as tf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "04944c8b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#creating a simple tensorflow dataset object\n",
+    "\n",
+    "daily_sales_number = [21,22, -108,31,-1,32,34,31]\n",
+    "\n",
+    "#this a list . we need to make a dataset of this"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "31016826",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<TensorSliceDataset shapes: (), types: tf.int32>"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tf_dataset = tf.data.Dataset.from_tensor_slices(daily_sales_number)\n",
+    "tf_dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "d7602539",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "tf.Tensor(21, shape=(), dtype=int32)\n",
+      "tf.Tensor(22, shape=(), dtype=int32)\n",
+      "tf.Tensor(-108, shape=(), dtype=int32)\n",
+      "tf.Tensor(31, shape=(), dtype=int32)\n",
+      "tf.Tensor(-1, shape=(), dtype=int32)\n",
+      "tf.Tensor(32, shape=(), dtype=int32)\n",
+      "tf.Tensor(34, shape=(), dtype=int32)\n",
+      "tf.Tensor(31, shape=(), dtype=int32)\n"
+     ]
+    }
+   ],
+   "source": [
+    "#to get the items we have to iterate through the data set\n",
+    "\n",
+    "for sales in tf_dataset:\n",
+    "    print(sales)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "d204f43e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "21\n",
+      "22\n",
+      "-108\n",
+      "31\n",
+      "-1\n",
+      "32\n",
+      "34\n",
+      "31\n"
+     ]
+    }
+   ],
+   "source": [
+    "for sales in tf_dataset:\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "ef4b6fcb",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "21\n",
+      "22\n",
+      "-108\n"
+     ]
+    }
+   ],
+   "source": [
+    "#say there are lot of data , we need to watch only first 3 data then\n",
+    "\n",
+    "for sales in tf_dataset.take(3):\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "52634dbb",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "21\n",
+      "22\n",
+      "31\n",
+      "32\n",
+      "34\n",
+      "31\n"
+     ]
+    }
+   ],
+   "source": [
+    "#eventually we have to apply filter function to get claen data. here say we need values only greater then zero\n",
+    "\n",
+    "tf_dataset = tf_dataset.filter(lambda x:x>0)\n",
+    "#for items we need to iterate\n",
+    "\n",
+    "for sales in tf_dataset:\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "2237622f",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1512\n",
+      "1584\n",
+      "2232\n",
+      "2304\n",
+      "2448\n",
+      "2232\n"
+     ]
+    }
+   ],
+   "source": [
+    "#say these numbers in us dollars. i want in INR so need to multiply with 72\n",
+    "tf_dataset = tf_dataset.map(lambda x:x*72)\n",
+    "for sales in tf_dataset:\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "516c1c6c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1512\n",
+      "2304\n",
+      "2448\n",
+      "2232\n",
+      "1584\n",
+      "2232\n"
+     ]
+    }
+   ],
+   "source": [
+    "#often in image data anlysis we use shuffle\n",
+    "\n",
+    "tf_dataset = tf_dataset.shuffle(3)\n",
+    "for sales in tf_dataset:\n",
+    "    print(sales.numpy())\n",
+    "    \n",
+    "    \n",
+    "#shuffle function takes buffer size as argument , you can refer stackoverflow to know how shuffle works "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "59072665",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[2232 1512 2304 2232]\n",
+      "[2448 1584]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#batching , making small small batches \n",
+    "for sales in tf_dataset.batch(4):\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "93bef173",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1584 1512]\n",
+      "[2232 2304]\n",
+      "[2448 2232]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#you can combine all the above 4 operations in one line of code using chaining principle\n",
+    "daily_sales_number = [21,22, -108,31,-1,32,34,31]\n",
+    "tf_dataset =tf.data.Dataset.from_tensor_slices(daily_sales_number)\n",
+    "tf_dataset = tf_dataset.filter(lambda x:x>0).map(lambda y:y*72).shuffle(2).batch(2)\n",
+    "for sales in tf_dataset:\n",
+    "    print(sales.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "4b1b46da",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Now time to read the CAT and DOG images\n",
+    "\n",
+    "\n",
+    "\n",
+    "# for reading images what i have done is \n",
+    "# install fatkun batch image downloader extension in chrome\n",
+    "# download images make two folders cat and dog\n",
+    "# make a folder named images in side the folder where yor jupyter notebook files are getting saved\n",
+    "# shuffle is kept off\n",
+    "# only first 3 values are shown below\n",
+    "# the images are not read still now these are only file paths\n",
+    "#\n",
+    "#"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "f337037e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "b'images\\\\cat\\\\10 Cat Exercises Your Pet Will Enjoy....jpg'\n",
+      "b'images\\\\cat\\\\10 Facts about Cats - Companion Animals....jpg'\n",
+      "b'images\\\\cat\\\\10 Fascinating Facts About Cats _ Purina.jpg'\n"
+     ]
+    }
+   ],
+   "source": [
+    "images_ds = tf.data.Dataset.list_files('images/*/*',shuffle=False)\n",
+    "\n",
+    "for file in images_ds.take(3):\n",
+    "    print(file.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "c77cc698",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "b'images\\\\dog\\\\Many dogs are prone to anxiety_ study finds.jpg'\n",
+      "b'images\\\\cat\\\\Acetaminophen Toxicity in Cats _ VCA....jpg'\n",
+      "b'images\\\\cat\\\\Why You_re Probably Training Your Cat....webp'\n"
+     ]
+    }
+   ],
+   "source": [
+    "# shuffling is done not mandatory though\n",
+    "\n",
+    "images_ds= images_ds.shuffle(200)\n",
+    "\n",
+    "for file in images_ds.take(3):\n",
+    "    print(file.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "b013b8c9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class_names=[\"cat\",\"dog\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "846be1e7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "194"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# image count\n",
+    "image_count=len(images_ds)\n",
+    "image_count"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "66c91d04",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "training_size = int(image_count*0.8)\n",
+    "\n",
+    "# 80 % of total images are to be used for training and remaining for testing\n",
+    "# take and skip functions are opposite to each other\n",
+    "\n",
+    "train_ds = images_ds.take(training_size)\n",
+    "test_ds = images_ds.skip(training_size)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "8bfeecbd",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "155"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(train_ds)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "d6c4a472",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "39"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(test_ds)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "2c8a760f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#  we want label for each image ...here folder name cat, dog are working as label\n",
+    "\n",
+    "\n",
+    "# below we are spliting the file path into strings \n",
+    "# label is 2nd from the last so -2 indexing is used"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "c00242e5",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['images', 'dog', 'Many dogs are prone to anxiety_ study finds.jpg']"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s= 'images\\\\dog\\\\Many dogs are prone to anxiety_ study finds.jpg'\n",
+    "s.split(\"\\\\\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "d76c1ddc",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'dog'"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "s.split(\"\\\\\")[-2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "id": "6be1e2af",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# okay we can write a function for this \n",
+    "\n",
+    "# def get_label(file_path):\n",
+    "       #return file_path.split(\"\\\\\")[-2]\n",
+    "    \n",
+    "    \n",
+    "\n",
+    "# file_path above is a tensor object  so we have to use special functions\n",
+    "def get_label(file_path):\n",
+    "    import os\n",
+    "    return tf.strings.split(file_path,os.path.sep)[-2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cdcce45f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# from x we map y value to predict classification\n",
+    "# y values are cat and dog which we have as label\n",
+    "# x values are the images , we need to read those"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "7baa057c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def process_image(file_path):\n",
+    "    label =get_label(file_path)\n",
+    "    \n",
+    "    img = tf.io.read_file(file_path)\n",
+    "    img = tf.image.decode_jpeg(img)\n",
+    "    img = tf.image.resize(img,[128,128])\n",
+    "    return img, label\n",
+    "\n",
+    "# special code written to decode jpeg format images"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "ddc27b15",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "b'images\\\\dog\\\\First dog Major back at White House....jpg'\n",
+      "b'images\\\\dog\\\\Many dogs are prone to anxiety_ study finds.jpg'\n",
+      "b'images\\\\dog\\\\What are the Differences Between Male....jpg'\n",
+      "b'images\\\\dog\\\\8 Popular Dog Breeds in India.jpg'\n"
+     ]
+    }
+   ],
+   "source": [
+    "for t in train_ds.take(4):\n",
+    "    print(t.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "id": "7c5a82ca",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "image: tf.Tensor(\n",
+      "[[[175.85889   156.85889   139.93701  ]\n",
+      "  [173.03906   154.03906   137.11719  ]\n",
+      "  [176.03906   158.03906   138.03906  ]\n",
+      "  ...\n",
+      "  [ 21.203125   22.203125   14.203125 ]\n",
+      "  [ 21.068848   24.068848   15.943848 ]\n",
+      "  [ 25.710938   22.710938   14.4609375]]\n",
+      "\n",
+      " [[174.8125    156.8125    136.8125   ]\n",
+      "  [176.88281   158.88281   138.88281  ]\n",
+      "  [174.        156.        136.       ]\n",
+      "  ...\n",
+      "  [ 25.828125   26.828125   18.828125 ]\n",
+      "  [ 19.08252    22.08252    13.95752  ]\n",
+      "  [ 27.51123    24.51123    16.26123  ]]\n",
+      "\n",
+      " [[174.        156.        134.       ]\n",
+      "  [175.80469   157.80469   135.80469  ]\n",
+      "  [174.        156.        136.       ]\n",
+      "  ...\n",
+      "  [ 23.440918   24.440918   16.440918 ]\n",
+      "  [ 22.765137   25.765137   17.640137 ]\n",
+      "  [ 23.674805   20.674805   12.424805 ]]\n",
+      "\n",
+      " ...\n",
+      "\n",
+      " [[168.03662   148.03662   124.03662  ]\n",
+      "  [165.15674   150.15674   130.28174  ]\n",
+      "  [172.19531   151.19531   132.19531  ]\n",
+      "  ...\n",
+      "  [  9.609375   10.609375    5.609375 ]\n",
+      "  [ 11.818848   12.818848    6.8188477]\n",
+      "  [  9.736816    9.736816    7.7368164]]\n",
+      "\n",
+      " [[171.        151.        127.       ]\n",
+      "  [167.93408   152.93408   133.05908  ]\n",
+      "  [174.94482   153.94482   134.94482  ]\n",
+      "  ...\n",
+      "  [ 12.930176   13.930176    8.930176 ]\n",
+      "  [ 10.905273   10.037109    5.088379 ]\n",
+      "  [  9.578125    8.578125    6.578125 ]]\n",
+      "\n",
+      " [[169.96094   147.96094   124.96094  ]\n",
+      "  [168.97803   151.54053   132.66553  ]\n",
+      "  [171.90088   154.90088   134.90088  ]\n",
+      "  ...\n",
+      "  [  9.984375   10.984375    5.984375 ]\n",
+      "  [  8.818848   10.818848    9.818848 ]\n",
+      "  [ 15.819824   11.819824    8.819824 ]]], shape=(128, 128, 3), dtype=float32)\n",
+      "Label: tf.Tensor(b'cat', shape=(), dtype=string)\n",
+      "image: tf.Tensor(\n",
+      "[[[195.16821  144.97314   97.97046 ]\n",
+      "  [203.8833   153.28174  106.41455 ]\n",
+      "  [196.18506  148.40503  100.6416  ]\n",
+      "  ...\n",
+      "  [179.03369  171.12622  191.35498 ]\n",
+      "  [175.9375   171.46875  194.60986 ]\n",
+      "  [174.15894  169.15894  192.15894 ]]\n",
+      "\n",
+      " [[201.10376  149.5022    93.29907 ]\n",
+      "  [187.41626  132.15063   77.26709 ]\n",
+      "  [192.1023   133.34033   79.65161 ]\n",
+      "  ...\n",
+      "  [154.38696  140.79443  154.59668 ]\n",
+      "  [181.84229  175.88354  198.67188 ]\n",
+      "  [175.7732   170.7732   193.7732  ]]\n",
+      "\n",
+      " [[202.91846  157.36597  101.95752 ]\n",
+      "  [161.12549  113.07861   57.37671 ]\n",
+      "  [164.83154  105.73779   53.401855]\n",
+      "  ...\n",
+      "  [153.53613  132.38916  140.35327 ]\n",
+      "  [174.47778  167.35278  189.29028 ]\n",
+      "  [178.67188  173.67188  196.67188 ]]\n",
+      "\n",
+      " ...\n",
+      "\n",
+      " [[161.49219  137.15625  133.83594 ]\n",
+      "  [165.29565  147.68628  147.88159 ]\n",
+      "  [165.42188  154.04224  161.92505 ]\n",
+      "  ...\n",
+      "  [160.52612  124.441895 113.173096]\n",
+      "  [181.68872  168.21875  186.60815 ]\n",
+      "  [172.3728   153.10376  150.74658 ]]\n",
+      "\n",
+      " [[161.5393   141.93774  144.73462 ]\n",
+      "  [165.46875  151.53125  158.39062 ]\n",
+      "  [167.17432  160.23438  171.50122 ]\n",
+      "  ...\n",
+      "  [175.66284  130.854    113.94653 ]\n",
+      "  [142.9458   124.82861  132.46216 ]\n",
+      "  [174.33618  159.2893   170.52344 ]]\n",
+      "\n",
+      " [[161.70825  144.82031  154.93237 ]\n",
+      "  [167.65576  156.85938  167.51514 ]\n",
+      "  [169.59937  166.24438  180.14062 ]\n",
+      "  ...\n",
+      "  [157.20972  110.99097   95.97974 ]\n",
+      "  [118.94849   96.21338   92.7605  ]\n",
+      "  [180.61694  167.02075  183.61426 ]]], shape=(128, 128, 3), dtype=float32)\n",
+      "Label: tf.Tensor(b'cat', shape=(), dtype=string)\n",
+      "image: tf.Tensor(\n",
+      "[[[198.3418   209.3711   200.7002  ]\n",
+      "  [199.84082  211.46582  201.79102 ]\n",
+      "  [200.38574  210.38574  202.10938 ]\n",
+      "  ...\n",
+      "  [214.94824  223.38574  220.57324 ]\n",
+      "  [216.4873   223.0498   220.8623  ]\n",
+      "  [214.89062  225.20508  221.54785 ]]\n",
+      "\n",
+      " [[199.11621  209.11621  200.67871 ]\n",
+      "  [200.49414  210.75977  203.29102 ]\n",
+      "  [199.40332  210.4668   201.0752  ]\n",
+      "  ...\n",
+      "  [216.51465  225.51465  222.51465 ]\n",
+      "  [219.14941  225.14941  223.14941 ]\n",
+      "  [217.57129  223.57129  221.57129 ]]\n",
+      "\n",
+      " [[200.0625   210.03613  202.11523 ]\n",
+      "  [198.59375  209.32812  202.53125 ]\n",
+      "  [203.2207   210.1582   203.3457  ]\n",
+      "  ...\n",
+      "  [218.95996  224.95996  222.95996 ]\n",
+      "  [218.26562  224.26562  222.26562 ]\n",
+      "  [218.76465  224.76465  222.76465 ]]\n",
+      "\n",
+      " ...\n",
+      "\n",
+      " [[225.52051  229.52051  228.52051 ]\n",
+      "  [224.28223  228.28223  227.28223 ]\n",
+      "  [223.32324  228.1582   224.65332 ]\n",
+      "  ...\n",
+      "  [ 43.456055  39.456055  36.456055]\n",
+      "  [ 40.80957   41.186523  36.498047]\n",
+      "  [ 42.213867  38.213867  35.213867]]\n",
+      "\n",
+      " [[226.70312  230.70312  229.70312 ]\n",
+      "  [226.4707   230.4707   229.4707  ]\n",
+      "  [225.6084   229.71777  228.38965 ]\n",
+      "  ...\n",
+      "  [ 37.558594  36.558594  33.683594]\n",
+      "  [ 38.86133   37.86133   35.86133 ]\n",
+      "  [ 37.325195  37.140625  35.140625]]\n",
+      "\n",
+      " [[226.8125   230.8125   229.8125  ]\n",
+      "  [226.35352  230.35352  229.35352 ]\n",
+      "  [227.64551  231.64551  230.64551 ]\n",
+      "  ...\n",
+      "  [ 36.44336   35.44336   33.44336 ]\n",
+      "  [ 36.779297  35.779297  33.779297]\n",
+      "  [ 39.8125    38.8125    36.8125  ]]], shape=(128, 128, 3), dtype=float32)\n",
+      "Label: tf.Tensor(b'cat', shape=(), dtype=string)\n"
+     ]
+    }
+   ],
+   "source": [
+    "train_ds = train_ds.map(process_image)\n",
+    "for img,label in train_ds.take(3):\n",
+    "    print(\"image:\", img)\n",
+    "    print(\"Label:\", label)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "4f7affc1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# have to scale it by dividing by 255\n",
+    "\n",
+    "def scale(image,label):\n",
+    "    return image/255,label"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "id": "7f8229a6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "****Image:  [0.0004753  0.00095012 0.00145953]\n",
+      "***Label:  b'dog'\n",
+      "****Image:  [0.00091066 0.00038779 0.00024938]\n",
+      "***Label:  b'cat'\n",
+      "****Image:  [0.00270448 0.00241229 0.00215205]\n",
+      "***Label:  b'cat'\n",
+      "****Image:  [1.5378701e-04 2.7681663e-04 7.6893506e-05]\n",
+      "***Label:  b'cat'\n",
+      "****Image:  [0.0032124  0.0034671  0.00357283]\n",
+      "***Label:  b'cat'\n"
+     ]
+    }
+   ],
+   "source": [
+    "train_ds =train_ds.map(scale)\n",
+    "for image,label in train_ds.take(5):\n",
+    "    print(\"****Image: \",image.numpy()[0][0])\n",
+    "    print(\"***Label: \",label.numpy())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5fedc1af",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

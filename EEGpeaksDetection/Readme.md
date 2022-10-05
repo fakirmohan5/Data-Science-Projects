@@ -1,1 +1,8 @@
 
+The EEG (electroencephalograph) measures brainwaves of different frequencies within the brain. Electrodes are placed on specific sites on the scalp to detect and record the electrical impulses within the brain. A frequency is the number of times a wave repeats itself within a second. It can be compared to the frequencies that you tune into on your radio. If any of these frequencies are deficient, excessive, or difficult to access, our mental performance can suffer. The raw EEG has usually been described in terms of frequency bands: Gamma greater than 30(Hz) BETA (13-30Hz), ALPHA (8-12 Hz), THETA (4-8 Hz), and DELTA (less than 4 Hz). For example: Our brain uses 13Hz (high alpha or low beta) for “active” intelligence. Often, we find individuals who exhibit learning disabilities and attention problems having a deficiency of 13Hz activity in certain brain regions that affects the ability to easily perform sequencing tasks and math calculations.
+
+After filtering out the beta EEG signals, peaks (local maxima) are detected using algorithm then square wave signals are generated based on peaks for input of stimulation signal to some hardware stimulator.  
+
+
+Scope of future research:
+In this study band pass filter with lower cut-off frequency of 17Hz and upper cut-off frequency of 37Hz is used to filter out noise from EEG data and to obtain a beta EEG wave. There is a possibility that there can be some noise present in the EEG signal between 17-37 Hz which would not be filtered out by the band pass filter, used in this study. For that concept of wavelet transform can be used to further breakdown the EEG data between 17-37 Hz and filter out the noise if any.
